@@ -65,7 +65,7 @@ def main():
     t2.join()
     t3.join()
 
-    print('done!')
+    print('diego')
 
 
 if __name__ == "__main__":
