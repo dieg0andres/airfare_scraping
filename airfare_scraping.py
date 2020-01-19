@@ -166,11 +166,10 @@ def gather_initial_data(driver):
         len(dep_times_list) == len(arr_times_list):
         pass
     else:
-        msg = 'length of lists gathered are not all equal:'
+        msg = 'length of lists gathered are not all equal for '+inputs['arr']
         print(msg)
         print('airlines', len(airlines_list), 'prices', len(prices_list), 'durations', len(durations_list), 'stops',
               len(stops_list), 'dep_times', len(dep_times_list), 'arr_times', len(arr_times_list))
-        sms_msg(msg, my_number, my_provider)
         return pd.DataFrame()
 
     data = {'airlines': airlines_list,
