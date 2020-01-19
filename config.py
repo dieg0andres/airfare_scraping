@@ -21,7 +21,6 @@ params = {
     'email_recipient' : 'diego.a.galindo@gmail.com', # for lowest fair / price drop notifications
     'sms_recipient' : '8137489298',     # for price notification
     'sms_provider' : 'verizon',          # for price notification
-    'price_drop_threshold' : 0.8        # if current price minimum is < avg price minimum * threshold --> price drop
 }
 
 # contact info to send SMS when an Exception is raised

@@ -73,22 +73,3 @@ def graph_df_by_dep_date_data(df):
         sms_msg(msg, my_number, my_provider)
 
 
-def detect_price_drop(df):
-
-    last_run = df['info_date'].max()
-    last_min = df[df.info_date == last_run]['prices'].min()
-
-    # delete rows from last run
-    index_last_run = df[df['info_date'] == last_run].index
-    df.drop(index_last_run, inplace=True)
-
-    min_ = df['prices'].min()
-    dates_of_min = df[df.prices==last_min]['dep_date'].unique()
-    airline = str(df[df.prices == last_min]['airlines'].unique())
-
-    if last_min  < min_ * params['price_drop_threshold']:
-        print('detected price drop; attempt to notify via sms')
-        msg = 'PRICE DROP! ' + inputs['dep'] + '->' + inputs['arr'] + '\ndep ' + str(
-            dates_of_min) + '; $' + str(last_min) + '; '+airline
-        sms_msg(msg, params['sms_recipient'], params['sms_provider'])
-

@@ -35,12 +35,11 @@ def main():
        # plot(df)
         del df
         print('going to sleep')
-        time.sleep(1*1*60)
+        time.sleep(1*60*60)
 
 if __name__ == "__main__":
     main()
 
 # TODO:
 # 1) fix the different length lists
-# 2) update detect_price_drop to compare last_min to min_now
-# 3) delete old data... add thread to run 1x / day
+# 2) write purchase ticket function if price below threshold
