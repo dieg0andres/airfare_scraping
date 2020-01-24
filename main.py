@@ -41,5 +41,5 @@ if __name__ == "__main__":
     main()
 
 # TODO:
-# 1) fix the different length lists
 # 2) write purchase ticket function if price below threshold
+# 3) modify code to notify prices once per day or when price drops... receiving too many texts / emails...

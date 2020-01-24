@@ -159,8 +159,11 @@ def gather_initial_data(driver):
     now = datetime.datetime.now()
 
     # fixes bug that adds an empty string to airlines_list when scraping data.
-    if airlines_list[0] == '' and len(airlines_list)-1 == len(prices_list):
-        airlines_list.remove('')
+    try:
+        if airlines_list[0] == '' and len(airlines_list)-1 == len(prices_list):
+            airlines_list.remove('')
+    except Exception as e:
+        print(e)
 
     # Check length of list as a troubleshooting measure to prevent script crash if lengths are different
     if len(airlines_list) == len(prices_list) and \
