@@ -8,11 +8,11 @@ geckodriver must be in project main folder
 
 inputs = {
     'dep' : 'IAH',                  # 3 letter airport code
-    'arr' : str(sys.argv[-1]),      # 3 letter airport code as entered by the user at the command line
+    'arr' : str(sys.argv[1]),      # 3 letter airport code as entered by the user at the command line
     'flight_type' : 'roundtrip',      # 'one way' or 'roundtrip'
     'fare_type' : 'Business',       # 'Business' or 'Economy/Coach'
-    'dep_date' : '04/01/2020',      # 'mm/dd/yyyy'
-    'return_date' : '04/07/2020'   # 'mm/dd/yyyy' .. enter xx/xx/xxxx if flight type is 'one way'
+    'dep_date' : str(sys.argv[2]),      # 'mm/dd/yyyy'
+    'return_date' : str(sys.argv[3])   # 'mm/dd/yyyy' .. enter xx/xx/xxxx if flight type is 'one way'
     }
 
 params = {

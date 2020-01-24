@@ -13,7 +13,7 @@ def setup_webdriver():
     driver = -1
     try:
         driver = webdriver.Firefox(executable_path = './geckodriver')
-        driver.set_window_position(-15000, 15000)
+        driver.set_window_position(-150000, 150000)
         driver.set_page_load_timeout(60)
 
     except Exception as e:
@@ -157,6 +157,10 @@ def gather_initial_data(driver):
     # INFO: save data in pandas dataframe
     list_len = len(prices_list)
     now = datetime.datetime.now()
+
+    # fixes bug that adds an empty string to airlines_list when scraping data.
+    if airlines_list[0] == '' and len(airlines_list)-1 == len(prices_list):
+        airlines_list.remove('')
 
     # Check length of list as a troubleshooting measure to prevent script crash if lengths are different
     if len(airlines_list) == len(prices_list) and \
