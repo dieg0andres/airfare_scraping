@@ -158,10 +158,16 @@ def gather_initial_data(driver):
     list_len = len(prices_list)
     now = datetime.datetime.now()
 
-    # fixes bug that adds an empty string to airlines_list when scraping data.
     try:
+        # fixes bug that adds an empty string to airline_list when scraping data.
         if airlines_list[0] == '' and len(airlines_list)-1 == len(prices_list):
             airlines_list.remove('')
+
+        # fixes a bug that adds an extra arr_time and dep_time when a 'combo' deal shows up on website but doesn't show price for 'combo' deal
+        if len(arr_times_list) == len(dep_times_list) and len(arr_times_list) - 1 == len(airlines_list) and len(airlines_list) == len(prices_list):
+            arr_times_list.pop(0)
+            dep_times_list.pop(0)
+
     except Exception as e:
         print(e)
 

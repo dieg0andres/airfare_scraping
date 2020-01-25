@@ -1,7 +1,9 @@
 import time
+import pickle
+import datetime
 from airfare_scraping import vary_dates
 from communicate import email_lowest_fare, email_with_att, sms_lowest_fare
-from config import params
+from config import params, inputs
 from analysis import df_by_dep_date, graph_df_by_dep_date_data
 
 def search_gather_save():
@@ -26,13 +28,30 @@ def plot(df):
     graph_file = graph_df_by_dep_date_data(df_analysis)
     email_with_att(graph_file)
 
+def pickle_data(df):
+    try:
+        file_name = inputs['arr'] + '.pickle'
+        file1 = open(file_name, 'wb')
+        pickle.dump(df, file1)
+        file1.close()
+    except Exception as e:
+        print('error while pickling df', e)
 
 def main():
 
+    price_communicated = 10**6
+    last_communication = datetime.date.today() - datetime.timedelta(days=10)
+
     while True:
+
         df = search_gather_save()
-        communicate_prices(df)
-       # plot(df)
+        pickle_data(df)
+
+        if df['prices'].min() < price_communicated or last_communication < datetime.date.today():
+            communicate_prices(df)
+            price_communicated = df['prices'].min()
+            last_communication = datetime.date.today()
+
         del df
         print('going to sleep')
         time.sleep(1*60*60)
@@ -42,4 +61,3 @@ if __name__ == "__main__":
 
 # TODO:
 # 2) write purchase ticket function if price below threshold
-# 3) modify code to notify prices once per day or when price drops... receiving too many texts / emails...

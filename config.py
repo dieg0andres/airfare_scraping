@@ -17,7 +17,7 @@ inputs = {
 
 params = {
     'freq' : 1,    # how frequent to get pricing data (1= daily, 2= every other day, 7= 1/wk
-    'length period' : 90,  # how many days beyond initial departure date to do price search
+    'length period' : 2,  # how many days beyond initial departure date to do price search
     'email_recipient' : 'diego.a.galindo@gmail.com', # for lowest fair / price drop notifications
     'sms_recipient' : '8137489298',     # for price notification
     'sms_provider' : 'verizon',          # for price notification
