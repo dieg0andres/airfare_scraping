@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from config import inputs, params, my_number, my_provider
 from communicate import sms_msg
+from purchase import buy_tickets
 
 
 def setup_webdriver():
@@ -29,36 +30,47 @@ def initial_search(driver):
     conducts search based on inputs
     returns a selenium webdriver object
     """
+    delay_large = 15
+    delay_small = 0.5
     try:
         driver.get("http://expedia.com")
-        time.sleep(6)
+        time.sleep(delay_large)
         driver.find_element_by_xpath("//button[@id='tab-flight-tab-hp']").click()
-        time.sleep(1)
+        time.sleep(delay_small)
         if inputs['flight_type'] == 'one way':
             driver.find_element_by_xpath("//label[@id='flight-type-one-way-label-hp-flight']").click()
-            time.sleep(1)
+            time.sleep(delay_small)
             driver.find_element_by_xpath("//input[@id='flight-departing-single-hp-flight']").send_keys(
                 inputs['dep_date'])
         else:
             driver.find_element_by_xpath("//label[@id='flight-type-roundtrip-label-hp-flight']").click()
-            time.sleep(1)
+            time.sleep(delay_small)
             driver.find_element_by_xpath("//input[@id='flight-departing-hp-flight']").send_keys(inputs['dep_date'])
-            time.sleep(1)
+            time.sleep(delay_small)
             for i in range(12):
                 driver.find_element_by_xpath("//input[@id='flight-returning-hp-flight']").send_keys(Keys.BACKSPACE)
             driver.find_element_by_xpath("//input[@id='flight-returning-hp-flight']").send_keys(inputs['return_date'])
-        time.sleep(1)
+        time.sleep(delay_small)
         driver.find_element_by_xpath("//input[@id='flight-origin-hp-flight']").send_keys(inputs['dep'])
-        time.sleep(1)
+        time.sleep(delay_small)
         driver.find_element_by_xpath("//input[@id='flight-destination-hp-flight']").send_keys(inputs['arr'])
-        time.sleep(1)
+        time.sleep(delay_small)
         driver.find_element_by_xpath("//a[@id='flight-advanced-options-hp-flight']").click()
-        time.sleep(1)
+        time.sleep(delay_small)
         Select(driver.find_element_by_xpath(
             "//select[@id='flight-advanced-preferred-class-hp-flight']")).select_by_visible_text(inputs['fare_type'])
-        time.sleep(1)
+        time.sleep(delay_small)
+
+        if inputs['traveler_count'] == 2:
+            driver.find_element_by_xpath("//button[@class='trigger-utility menu-trigger btn-utility btn-secondary dropdown-toggle theme-standard pin-left menu-arrow gcw-component gcw-traveler-amount-select gcw-component-initialized']").click()
+            time.sleep(delay_small)
+            driver.find_element_by_xpath("//button[@class='uitk-step-input-button uitk-step-input-plus']").click()
+            time.sleep(delay_small)
+            driver.find_element_by_xpath("//button[@class='close btn-text']").click()
+            time.sleep(delay_small)
+
         driver.find_element_by_xpath("//button[@class='btn-primary btn-action gcw-submit']").send_keys(Keys.ENTER)
-        time.sleep(20)
+        time.sleep(delay_large)
 
     except Exception as e:
         msg = 'an error ocurred while conducting search\n' + str(e)
@@ -116,7 +128,7 @@ def gather_initial_data(driver):
         time.sleep(2)
 
     except Exception as e:
-        msg = 'an error ocurred while gathering data\n' + str(e)
+        msg = 'an error occurred while gathering data\n' + str(e)
         print(msg)
         sms_msg(msg, my_number, my_provider)
 
@@ -132,6 +144,16 @@ def gather_initial_data(driver):
         prices.append(price)
     prices_list = prices
     del prices
+
+    # if minimum price is < threshold... try to buy tickets
+    if min(prices_list) < params['threshold']:
+        msg = 'Try buying ' + inputs['arr'] + ': ' + str(min(prices_list))
+        print(msg)
+        sms_msg(msg, my_number, my_provider)
+        buy_tickets(driver, min(prices_list))
+        
+        # if buy_tickets failed... return empty df
+        return pd.DataFrame()
 
     # edit durations to get a float in hours
     durations = []
